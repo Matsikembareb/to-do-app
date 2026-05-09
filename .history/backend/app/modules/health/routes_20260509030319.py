@@ -16,10 +16,10 @@ def swagger_ui():
 def openapi_json():
     """Return the generated OpenAPI JSON for the API."""
     spec_dict = api.spec.to_dict()
-    spec_dict['openapi'] = current_app.config.get('OPENAPI_VERSION')
+    spec_dict['openapi'] = current_app.config.get('OPENAPI_VERSION', '3.0.2')
     spec_dict.setdefault('info', {
-        'title': current_app.config.get('API_TITLE'),
-        'version': current_app.config.get('API_VERSION')
+        'title': current_app.config.get('API_TITLE', 'API'),
+        'version': current_app.config.get('API_VERSION', '1.0.0')
     })
     spec_dict.setdefault('paths', {})
     return jsonify(spec_dict)

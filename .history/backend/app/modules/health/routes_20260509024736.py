@@ -1,5 +1,4 @@
 from flask import render_template, jsonify, current_app
-from app import api
 from app.modules.health import bp
 
 @bp.route('/health', methods=['GET'])
@@ -15,11 +14,13 @@ def swagger_ui():
 @bp.route('/openapi.json')
 def openapi_json():
     """Return the generated OpenAPI JSON for the API."""
-    spec_dict = api.spec.to_dict()
-    spec_dict['openapi'] = current_app.config.get('OPENAPI_VERSION')
-    spec_dict.setdefault('info', {
-        'title': current_app.config.get('API_TITLE'),
-        'version': current_app.config.get('API_VERSION')
-    })
-    spec_dict.setdefault('paths', {})
+    # Access the Api instance from current_app.extensions
+    try:
+        api = current_app.extensions.get('flask-smorest')
+        if api and hasattr(api, 'spec'):
+            spec_dict = api.spec.to_dict()
+        else:
+            spec_dict = {}
+    except Exception:
+        spec_dict = {}
     return jsonify(spec_dict)

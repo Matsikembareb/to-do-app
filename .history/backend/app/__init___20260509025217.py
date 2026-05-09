@@ -15,9 +15,6 @@ def create_app(config_class) -> Flask:
     api.init_app(app)
 
     # Import blueprints AFTER db is initialized to avoid circular imports
-    from app.modules.errors import bp as errors_bp
-    app.register_blueprint(errors_bp)
-
     from app.modules.health import bp as health_bp
     app.register_blueprint(health_bp)
 

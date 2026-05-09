@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_smorest import Api
 from app.db import db
@@ -9,20 +10,25 @@ api = Api()
 def create_app(config_class) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.config['API_TITLE'] = 'Muzukuru API'
+    app.config['API_VERSION'] = 'v1'
+    app.config['OPENAPI_VERSION'] = '3.0.2'
 
     db.init_app(app)
     migrate.init_app(app, db)
     api.init_app(app)
 
     # Import blueprints AFTER db is initialized to avoid circular imports
-    from app.modules.errors import bp as errors_bp
-    app.register_blueprint(errors_bp)
-
     from app.modules.health import bp as health_bp
     app.register_blueprint(health_bp)
 
     from app.modules.users import bp as users_bp
     api.register_blueprint(users_bp)
+
+    @app.route('/docs')
+    def swagger_ui():
+        """Serve Swagger UI that loads the generated OpenAPI spec."""
+        return render_template('swagger_ui.html')
 
     return app
     """
