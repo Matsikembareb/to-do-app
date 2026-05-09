@@ -1,8 +1,9 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_smorest import Api
-from app.db import db
 
+db = SQLAlchemy()
 migrate = Migrate()
 api = Api()
 
@@ -25,9 +26,6 @@ def create_app(config_class) -> Flask:
     api.register_blueprint(users_bp)
 
     return app
-    """
-    swagger app to be initialized
-    if config == 'development':
         app.run(debug=True)
     else:
         from werkzeug.serving import run_simple

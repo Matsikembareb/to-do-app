@@ -1,8 +1,9 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_smorest import Api
-from app.db import db
 
+db = SQLAlchemy()
 migrate = Migrate()
 api = Api()
 
@@ -22,6 +23,8 @@ def create_app(config_class) -> Flask:
     app.register_blueprint(health_bp)
 
     from app.modules.users import bp as users_bp
+    from app.modules.users import _init_routes
+    _init_routes()  # Trigger routes registration
     api.register_blueprint(users_bp)
 
     return app

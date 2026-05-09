@@ -1,8 +1,9 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_smorest import Api
-from app.db import db
 
+db = SQLAlchemy()
 migrate = Migrate()
 api = Api()
 
@@ -17,7 +18,6 @@ def create_app(config_class) -> Flask:
     migrate.init_app(app, db)
     api.init_app(app)
 
-    # Import blueprints AFTER db is initialized to avoid circular imports
     from app.modules.health import bp as health_bp
     app.register_blueprint(health_bp)
 

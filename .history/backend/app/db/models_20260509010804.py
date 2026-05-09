@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 import sqlalchemy as sa
-from app.db import db
+from app import db
 
 
 class User(db.Model):

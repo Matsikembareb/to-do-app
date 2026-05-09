@@ -22,6 +22,8 @@ def create_app(config_class) -> Flask:
     app.register_blueprint(health_bp)
 
     from app.modules.users import bp as users_bp
+    from app.modules.users import _init_routes
+    _init_routes()  # Trigger routes registration
     api.register_blueprint(users_bp)
 
     return app
