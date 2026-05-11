@@ -5,7 +5,8 @@ from sqlalchemy import select
 from app import db
 from app.db.models import User
 from app.modules.users import bp
-from app.modules.auth.decorators import token_required
+from app.utils.jwt_utils import generate_token
+from app.utils.decorators import token_required
 
 
 class UserSchema(Schema):
@@ -23,9 +24,19 @@ class UserCreateSchema(Schema):
     password = fields.Str(required=True, validate=validate.Length(min=6))
 
 
+class LoginSchema(Schema):
+    username = fields.Str(required=True)
+    password = fields.Str(required=True)
+
+
+class TokenSchema(Schema):
+    access_token = fields.Str()
+    token_type = fields.Str()
+    user = fields.Nested(UserSchema)
+
+
 @bp.route('/')
 class UserList(MethodView):
-    @token_required
     @bp.response(200, UserSchema(many=True))
     def get(self):
         """Get all users"""
@@ -33,7 +44,6 @@ class UserList(MethodView):
         users = db.session.scalars(stmt).all()
         return users
 
-    @token_required
     @bp.arguments(UserCreateSchema)
     @bp.response(201, UserSchema)
     def post(self, new_data):
@@ -50,7 +60,6 @@ class UserList(MethodView):
 
 @bp.route('/<int:user_id>')
 class UserDetail(MethodView):
-    @token_required
     @bp.response(200, UserSchema)
     def get(self, user_id):
         """Get a user by ID"""
@@ -59,7 +68,6 @@ class UserDetail(MethodView):
             abort(404)
         return user
 
-    @token_required
     @bp.arguments(UserCreateSchema)
     @bp.response(200, UserSchema)
     def put(self, new_data, user_id):
@@ -73,7 +81,6 @@ class UserDetail(MethodView):
         db.session.commit()
         return user
 
-    @token_required
     def delete(self, user_id):
         """Delete a user"""
         user = db.session.get(User, user_id)
