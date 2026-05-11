@@ -15,14 +15,6 @@ class BaseConfig:
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'dev-jwt-key-change-in-production')
     JWT_ALGORITHM = 'HS256'
     JWT_EXPIRY_HOURS = 1
-    # Email Configuration for Error Logging
-    MAIL_SERVER = os.getenv('MAIL_SERVER')
-    MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
-    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS', True)
-    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
-    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
-    MAIL_FROM = os.getenv('MAIL_FROM', 'noreply@muzukuru.app')
-    ADMINS = os.getenv('ADMINS', '').split(',') if os.getenv('ADMINS') else []
 
 class DevelopmentConfig(BaseConfig):
     """Development configuration."""
